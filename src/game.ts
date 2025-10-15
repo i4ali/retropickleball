@@ -3,6 +3,8 @@ import { Court } from './court';
 import { Player } from './player';
 import { Ball } from './ball';
 import { AI } from './ai';
+import { Audio } from './audio';
+import { Particle } from './particle';
 
 export class Game {
   private canvas: HTMLCanvasElement;
@@ -20,13 +22,17 @@ export class Game {
   private court: Court;
   private player: Player;
   private opponent: Player;
-  private ball: Ball;
+  public ball: Ball;
   private ai: AI;
+  public audio: Audio;
 
   // Scores
   public playerScore: number = 0;
   public aiScore: number = 0;
   public lastHitBy: PlayerType | null = null;
+  public powerShot: boolean = false;
+
+  private particles: Particle[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -63,6 +69,7 @@ export class Game {
     this.opponent = new Player(this, canvas.width / 2 - 20, 210, false);
     this.ball = new Ball(this);
     this.ai = new AI(this, this.opponent, this.ball);
+    this.audio = new Audio();
 
     // Setup input handlers
     this.setupInputHandlers();
@@ -76,6 +83,11 @@ export class Game {
       }
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
         this.player.moveRight = true;
+      }
+
+      // Power shot
+      if (e.key === ' ') {
+        this.powerShot = true;
       }
 
       // Start game or serve
@@ -96,10 +108,18 @@ export class Game {
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
         this.player.moveRight = false;
       }
+
+      // Power shot
+      if (e.key === ' ') {
+        this.powerShot = false;
+      }
     });
 
     // Mouse/click to start
     this.canvas.addEventListener('click', () => {
+      if (this.audio.audioContext.state === 'suspended') {
+        this.audio.audioContext.resume();
+      }
       if (this.gameState === GameState.START) {
         this.gameState = GameState.SERVING;
         this.serveBall();
@@ -125,6 +145,12 @@ export class Game {
     this.ball.reset();
     this.player.reset();
     this.opponent.reset();
+  }
+
+  public createParticles(x: number, y: number, count: number): void {
+    for (let i = 0; i < count; i++) {
+      this.particles.push(new Particle(x, y));
+    }
   }
 
   public start(): void {
@@ -157,6 +183,10 @@ export class Game {
 
   private update(deltaTime: number): void {
     if (this.gameState === GameState.PLAYING) {
+      // Update particles
+      this.particles = this.particles.filter(p => p.lifespan > 0);
+      this.particles.forEach(p => p.update(deltaTime));
+
       // Update player
       this.player.update(deltaTime);
 
@@ -181,22 +211,24 @@ export class Game {
     const courtLeft = 50;
     const courtRight = this.canvas.width - 50;
 
-    // Ball out at the top
+    // Ball out at the top (AI's side)
     if (ballY < courtTop) {
+      // If player hit it last, player gets a point.
       if (this.lastHitBy === PlayerType.PLAYER) {
-        this.aiScore++;
-      } else {
+        this.playerScore++;
+      } else { // If AI hit it out on its own side, player gets a point.
         this.playerScore++;
       }
       this.onPointScored();
       return;
     }
 
-    // Ball out at the bottom
+    // Ball out at the bottom (Player's side)
     if (ballY + ballSize > courtBottom) {
+      // If AI hit it last, AI gets a point.
       if (this.lastHitBy === PlayerType.AI) {
-        this.playerScore++;
-      } else {
+        this.aiScore++;
+      } else { // If player hit it out on their own side, AI gets a point.
         this.aiScore++;
       }
       this.onPointScored();
@@ -205,9 +237,10 @@ export class Game {
 
     // Ball out on the sides
     if (ballX < courtLeft || ballX + ballSize > courtRight) {
+      // If player hit it last and it went out, AI gets a point.
       if (this.lastHitBy === PlayerType.PLAYER) {
         this.aiScore++;
-      } else {
+      } else { // If AI hit it last and it went out, player gets a point.
         this.playerScore++;
       }
       this.onPointScored();
@@ -217,12 +250,18 @@ export class Game {
 
   private onPointScored(): void {
     this.gameState = GameState.POINT_WON;
+    this.audio.playPointScored();
 
     // Check for game over
     if (this.playerScore >= this.config.winningScore || this.aiScore >= this.config.winningScore) {
       // Check win by 2 rule
       if (Math.abs(this.playerScore - this.aiScore) >= 2) {
         this.gameState = GameState.GAME_OVER;
+        if (this.playerScore > this.aiScore) {
+          this.audio.playWin();
+        } else {
+          this.audio.playLose();
+        }
         return;
       }
     }
@@ -247,6 +286,9 @@ export class Game {
 
     // Draw ball
     this.ball.render(this.ctx);
+
+    // Draw particles
+    this.particles.forEach(p => p.render(this.ctx));
 
     // Draw score
     this.drawScore();

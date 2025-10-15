@@ -14,6 +14,7 @@ export class Player {
   public moveRight: boolean = false;
 
   public hitAnimationState: number = 0;
+  public paddleHand: 'left' | 'right' = 'right';
 
   constructor(game: Game, x: number, y: number, isPlayer: boolean) {
     this.game = game;
@@ -33,6 +34,17 @@ export class Player {
       this.hitAnimationState -= deltaTime * 5; // Animation lasts for 1/5 second
       if (this.hitAnimationState < 0) {
         this.hitAnimationState = 0;
+      }
+    }
+
+    // Update paddle hand based on ball position
+    const ball = this.game.ball;
+    if (ball) {
+      const playerCenter = this.position.x + 20; // 20 is half of player width
+      if (ball.position.x < playerCenter) {
+        this.paddleHand = 'left';
+      } else {
+        this.paddleHand = 'right';
       }
     }
 
@@ -103,29 +115,53 @@ export class Player {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     ctx.fillRect(x + 8 * scale, y + 14 * scale, 24 * scale, 4 * scale);
 
-    // Arms (extended to sides for top-down view)
+    // Arms and paddle
     ctx.fillStyle = skinColor;
-    // Left arm
-    ctx.fillRect(x + 2 * scale, y + 18 * scale, 8 * scale, 8 * scale);
-    // Right arm (holding paddle)
-    ctx.fillRect(x + 30 * scale, y + 18 * scale, 8 * scale, 8 * scale);
+    if (this.paddleHand === 'right') {
+      // Left arm
+      ctx.fillRect(x + 2 * scale, y + 18 * scale, 8 * scale, 8 * scale);
+      // Right arm (holding paddle)
+      ctx.fillRect(x + 30 * scale, y + 18 * scale, 8 * scale, 8 * scale);
 
-    // Paddle (held in right hand, angled)
-    ctx.save();
-    ctx.translate(x + 38 * scale, y + 22 * scale);
-    const baseRotation = Math.PI / 6;
-    const hitRotation = -Math.PI / 4 * this.hitAnimationState; // Swing forward
-    ctx.rotate(baseRotation + hitRotation);
-    ctx.fillStyle = paddleColor;
-    ctx.fillRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
-    ctx.strokeStyle = '#8B4513';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
+      // Paddle (held in right hand, angled)
+      ctx.save();
+      ctx.translate(x + 38 * scale, y + 22 * scale);
+      const baseRotation = Math.PI / 6;
+      const hitRotation = -Math.PI / 4 * this.hitAnimationState; // Swing forward
+      ctx.rotate(baseRotation + hitRotation);
+      ctx.fillStyle = paddleColor;
+      ctx.fillRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
 
-    // Paddle handle
-    ctx.fillStyle = '#8B4513';
-    ctx.fillRect(-2 * scale, 8 * scale, 4 * scale, 8 * scale);
-    ctx.restore();
+      // Paddle handle
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(-2 * scale, 8 * scale, 4 * scale, 8 * scale);
+      ctx.restore();
+    } else { // left hand
+      // Right arm
+      ctx.fillRect(x + 30 * scale, y + 18 * scale, 8 * scale, 8 * scale);
+      // Left arm (holding paddle)
+      ctx.fillRect(x + 2 * scale, y + 18 * scale, 8 * scale, 8 * scale);
+
+      // Paddle (held in left hand, angled)
+      ctx.save();
+      ctx.translate(x + 2 * scale, y + 22 * scale);
+      const baseRotation = -Math.PI / 6;
+      const hitRotation = Math.PI / 4 * this.hitAnimationState; // Swing forward
+      ctx.rotate(baseRotation + hitRotation);
+      ctx.fillStyle = paddleColor;
+      ctx.fillRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-6 * scale, -10 * scale, 12 * scale, 20 * scale);
+
+      // Paddle handle
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(-2 * scale, 8 * scale, 4 * scale, 8 * scale);
+      ctx.restore();
+    }
 
     // Head (top-down view - more circular)
     ctx.fillStyle = skinColor;

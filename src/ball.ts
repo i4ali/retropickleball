@@ -73,8 +73,16 @@ export class Ball {
         this.velocity.y = Math.cos(angle) * speed * direction;
         this.velocity.x = Math.sin(angle) * speed;
 
-        // Increase speed slightly on each hit (up to max)
-        this.currentSpeed = Math.min(this.currentSpeed * 1.05, this.maxSpeed);
+        // Power shot
+        if (player.isPlayer && this.game.powerShot) {
+          this.currentSpeed = Math.min(this.currentSpeed * 1.5, this.maxSpeed * 1.5); // Increase speed by 50% for power shot
+          this.game.audio.playPowerShot();
+          this.game.createParticles(this.position.x + this.game.config.ballSize / 2, this.position.y + this.game.config.ballSize / 2, 20);
+        } else {
+          // Increase speed slightly on each hit (up to max)
+          this.currentSpeed = Math.min(this.currentSpeed * 1.05, this.maxSpeed);
+          this.game.audio.playPaddleHit();
+        }
 
         // Normalize and apply new speed
         const velocityMagnitude = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);

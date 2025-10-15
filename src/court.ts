@@ -11,9 +11,9 @@ export class Court {
     const canvas = this.game.getCanvas();
 
     // Top-down/isometric perspective view
-    const courtX = 120;
+    const courtX = 320;
     const courtY = 200;
-    const courtWidth = canvas.width - 240;
+    const courtWidth = canvas.width - 640;
     const courtHeight = canvas.height - 350;
 
     // Draw dark background
@@ -24,7 +24,7 @@ export class Court {
     this.drawSurroundingFoliage(ctx, courtX, courtY, courtWidth, courtHeight);
 
     // Draw court with perspective - slightly wider at bottom (closer to camera)
-    const perspectiveAmount = 100; // How much wider the bottom is
+    const perspectiveAmount = 300; // How much wider the bottom is
     ctx.fillStyle = '#4a7c0e'; // Darker green for back of court
     ctx.beginPath();
     ctx.moveTo(courtX - perspectiveAmount / 2, courtY);
@@ -222,13 +222,13 @@ export class Court {
     ctx.fillRect(rightNetX - postWidth / 2, netY - postHeight, postWidth, postHeight);
 
     // Draw net shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.fillRect(leftNetX, netY + 2, rightNetX - leftNetX, 6);
 
     // Draw net (dark mesh pattern with perspective)
-    ctx.strokeStyle = '#4a4a4a';
-    ctx.lineWidth = 3;
-    ctx.globalAlpha = 0.8;
+    ctx.strokeStyle = '#3a3a3a';
+    ctx.lineWidth = 4;
+    ctx.globalAlpha = 0.9;
 
     // Main net line with perspective
     ctx.beginPath();
