@@ -111,8 +111,8 @@ export class Game {
         this.cycleDifficulty();
       }
 
-      // Cycle music (only for logged in users)
-      if ((e.key === 'm' || e.key === 'M') && this.isLoggedIn) {
+      // Cycle music
+      if (e.key === 'm' || e.key === 'M') {
         this.cycleMusic();
       }
 
@@ -425,13 +425,18 @@ export class Game {
     // Draw FPS counter (for debugging)
     this.drawFPS();
 
+    // Draw music selection
+    this.drawMusicSelection();
+
     // Draw rank
     if (this.isLoggedIn) {
       this.drawRank();
-      this.drawMusicSelection();
     }
 
     this.drawDifficultyMessage();
+
+    // Draw controls guide
+    this.drawControlsGuide();
 
     // Restore context if screen shake was applied
     if (this.screenShake > 0) {
@@ -539,7 +544,7 @@ export class Game {
 
   private drawMusicSelection(): void {
     this.ctx.fillStyle = '#00FFFF';
-    this.ctx.fillText(`MUSIC: ${this.musicTracks[this.currentMusicIndex]} (M to change)`, 10, 120);
+    this.ctx.fillText(`MUSIC: ${this.musicTracks[this.currentMusicIndex]}`, 10, 120);
   }
 
   private drawDifficultyMessage(): void {
@@ -549,6 +554,15 @@ export class Game {
       this.ctx.fillStyle = '#00FFFF';
       this.ctx.fillText(this.difficultyMessage, this.canvas.width / 2, this.canvas.height - 50);
     }
+  }
+
+  private drawControlsGuide(): void {
+    this.ctx.font = '14px monospace';
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    this.ctx.textAlign = 'center';
+
+    const controls = '[←][→] Move   [SPACE] Power Shot   [M] Music   [P] Pause';
+    this.ctx.fillText(controls, this.canvas.width / 2, this.canvas.height - 20);
   }
 
   public setDifficulty(difficulty: DifficultyLevel): void {
