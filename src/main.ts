@@ -1,5 +1,8 @@
+import { inject } from '@vercel/analytics';
 import { Game } from './game';
 import { supabase } from './supabase';
+
+inject();
 
 // Initialize the game when DOM is loaded
 window.addEventListener('DOMContentLoaded', () => {
