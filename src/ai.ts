@@ -94,7 +94,7 @@ export class AI {
     this.difficulty = Math.max(0, Math.min(1, difficulty));
 
     // Adjust reaction delay based on difficulty
-    // Easy: 0.2s, Medium: 0.1s, Hard: 0.05s
-    this.reactionDelay = 0.05 + (1 - this.difficulty) * 0.15;
+    // Easy: 0.14s, Medium: 0.08s, Hard: 0.04s
+    this.reactionDelay = 0.02 + (1 - this.difficulty) * 0.2;
   }
 }

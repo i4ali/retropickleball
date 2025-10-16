@@ -1,8 +1,16 @@
-export class Audio {
+export class AudioManager {
   public audioContext: AudioContext;
+  private musicTrackPaths: string[];
+  private audioElements: { [key: number]: HTMLAudioElement } = {};
+  private currentTrack: HTMLAudioElement | null = null;
 
   constructor() {
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.musicTrackPaths = [
+      '/audio/track1.mp3',
+      '/audio/track2.mp3',
+      '/audio/track3.mp3'
+    ];
   }
 
   private createSound(frequency: number, type: OscillatorType, duration: number): () => void {
@@ -54,5 +62,24 @@ export class Audio {
 
   public playPowerShot(): void {
     this.createSound(660, 'triangle', 0.15)();
+  }
+
+  public setMusic(trackIndex: number): void {
+    if (this.currentTrack) {
+      this.currentTrack.pause();
+      this.currentTrack.currentTime = 0;
+    }
+
+    if (trackIndex > 0) {
+      const pathIndex = trackIndex - 1;
+      if (!this.audioElements[pathIndex]) {
+        this.audioElements[pathIndex] = new Audio(this.musicTrackPaths[pathIndex]);
+        this.audioElements[pathIndex].loop = true;
+      }
+      this.currentTrack = this.audioElements[pathIndex];
+      this.currentTrack.play().catch(e => console.error("Error playing audio:", e));
+    } else {
+      this.currentTrack = null;
+    }
   }
 }

@@ -26,10 +26,138 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       background: #000;
+      display: none; /* Initially hidden */
+    }
+
+    #startScreen {
+      color: #fff;
+      text-align: center;
+    }
+
+    #startScreen h1 {
+      font-size: 4rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 60px #ff00de, 0 0 70px #ff00de;
+    }
+
+    #startScreen button {
+      font-family: monospace;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      cursor: pointer;
+      background: #1a1a2e;
+      color: #fff;
+      border: 2px solid #fff;
+      box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de;
+      transition: all 0.3s ease;
+    }
+
+    #startScreen button:hover {
+      background: #ff00de;
+      color: #1a1a2e;
+      box-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de;
+    }
+
+    #startScreen .promo-message {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #00FFFF;
+      text-shadow: 0 0 5px #00FFFF;
+    }
+
+    #authModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #authModalContent {
+      background: #1a1a2e;
+      padding: 2rem;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00de;
+      text-align: center;
+      position: relative;
+    }
+
+    #closeModal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    #authMessage {
+      color: #ff00de;
+      margin-bottom: 1rem;
+    }
+
+    #authModalContent h2 {
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    #authModalContent input {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      font-size: 1rem;
+      background: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #authModalContent button {
+      font-family: monospace;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      cursor: pointer;
+      background: #1a1a2e;
+      color: #fff;
+      border: 2px solid #fff;
+      box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de;
+      transition: all 0.3s ease;
+    }
+
+    #authModalContent button:hover {
+      background: #ff00de;
+      color: #1a1a2e;
+      box-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de;
     }
   </style>
 </head>
 <body>
+  <div id="startScreen">
+    <h1>Retro Pickleball</h1>
+    <button id="quickPlayBtn">Quick Play</button>
+    <button id="loginBtn">Login/Sign Up</button>
+    <p class="promo-message">For the full experience, including rank tracking and custom music, sign up or log in!</p>
+  </div>
+
+  <div id="authModal" style="display: none;">
+    <div id="authModalContent">
+      <span id="closeModal">&times;</span>
+      <h2>Login/Sign Up</h2>
+      <p id="authMessage"></p>
+      <input type="email" id="emailInput" placeholder="Email">
+      <input type="password" id="passwordInput" placeholder="Password">
+      <button id="signUpBtn">Sign Up</button>
+      <button id="loginEmailBtn">Login</button>
+    </div>
+  </div>
+
   <canvas id="gameCanvas"></canvas>
   <script type="module" src="/src/main.ts"></script>
 </body>

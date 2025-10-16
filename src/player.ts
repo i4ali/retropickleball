@@ -60,11 +60,21 @@ export class Player {
     // Update position
     this.position.x += this.velocity.x * deltaTime;
 
-    // Keep player within court bounds (horizontal movement)
+    // Keep player within court bounds (horizontal movement with perspective)
     const playerWidth = 40;
     const canvas = this.game.getCanvas();
-    const courtLeft = 50;
-    const courtRight = canvas.width - 50;
+
+    // Court bounds vary dramatically with depth in true POV
+    const courtTop = 300;
+    const courtBottom = canvas.height - 200;
+    const courtDepth = courtBottom - courtTop;
+    const playerProgress = (this.position.y - courtTop) / courtDepth;
+    const farWidth = 180;
+    const nearWidth = 650;
+    const courtWidth = farWidth + (nearWidth - farWidth) * playerProgress;
+    const centerX = canvas.width / 2;
+    const courtLeft = centerX - courtWidth / 2;
+    const courtRight = centerX + courtWidth / 2;
 
     if (this.position.x < courtLeft) {
       this.position.x = courtLeft;
@@ -75,14 +85,37 @@ export class Player {
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
+    // Add glow effect when player is charging power shot
+    if (this.isPlayer && this.game.powerShot) {
+      ctx.shadowBlur = 25;
+      ctx.shadowColor = '#00FFFF';
+    }
+
     // Draw pixel art character in top-down/three-quarters view
     this.drawTopDownCharacter(ctx);
+
+    // Reset shadow
+    ctx.shadowBlur = 0;
   }
 
   private drawTopDownCharacter(ctx: CanvasRenderingContext2D): void {
     const x = this.position.x;
     const y = this.position.y;
-    const scale = this.isPlayer ? 1 : 0.85; // Far player is slightly smaller for perspective
+
+    // Dramatic scale based on Y position for true POV (far = tiny, near = huge)
+    const canvas = this.game.getCanvas();
+    const courtTop = 300;
+    const courtBottom = canvas.height - 200;
+    const courtDepth = courtBottom - courtTop;
+    const playerDepth = (y - courtTop) / courtDepth; // 0 = far, 1 = near
+    const minScale = 0.4; // Very small size (far away)
+    const maxScale = 1.5; // Very large size (close to camera)
+    let scale = minScale + (maxScale - minScale) * playerDepth;
+
+    // Make AI player taller
+    if (!this.isPlayer) {
+      scale *= 1.5; // AI is 50% taller
+    }
 
     // Character colors
     const shirtColor = this.isPlayer ? '#4169E1' : '#DC143C'; // Blue for player, Red for AI

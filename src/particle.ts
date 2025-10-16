@@ -10,12 +10,14 @@ export class Particle {
   constructor(x: number, y: number) {
     this.position = { x, y };
     this.velocity = {
-      x: (Math.random() - 0.5) * 400,
-      y: (Math.random() - 0.5) * 400,
+      x: (Math.random() - 0.5) * 500,
+      y: (Math.random() - 0.5) * 500,
     };
-    this.size = Math.random() * 10 + 5;
-    this.color = `hsl(${Math.random() * 60 + 200}, 100%, 50%)`;
-    this.lifespan = 0.5; // in seconds
+    this.size = Math.random() * 12 + 6;
+    // Vibrant neon colors: cyan, magenta, yellow, orange
+    const colors = ['#00FFFF', '#FF00FF', '#FFFF00', '#FF6600', '#00FF00'];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.lifespan = 0.8; // in seconds
   }
 
   public update(deltaTime: number): void {
@@ -25,11 +27,26 @@ export class Particle {
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
+    const alpha = Math.max(0, this.lifespan * 1.25);
+    ctx.globalAlpha = alpha;
+
+    // Add glow effect
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = this.color;
+
     ctx.fillStyle = this.color;
-    ctx.globalAlpha = Math.max(0, this.lifespan * 2);
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI * 2);
     ctx.fill();
+
+    // Additional outer glow
+    ctx.shadowBlur = 30;
+    ctx.beginPath();
+    ctx.arc(this.position.x, this.position.y, this.size * 0.7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Reset
+    ctx.shadowBlur = 0;
     ctx.globalAlpha = 1.0;
   }
 }
