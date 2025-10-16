@@ -1,5 +1,5 @@
 import { Game } from './game';
-import { Vector2D, Vector3D, PlayerType } from './types';
+import { Vector2D, PlayerType } from './types';
 
 export class Ball {
   public game: Game;

@@ -29,12 +29,11 @@ export class AI {
     }
 
     // Move paddle toward target
-    this.movePaddle(deltaTime);
+    this.movePaddle();
   }
 
   private updateTarget(): void {
     const ballCenter = this.ball.getCenter();
-    const paddleCenter = this.paddle.getCenter();
     const paddleWidth = 40;
 
     // Predict where the ball will be (horizontal X position)
@@ -63,7 +62,7 @@ export class AI {
     this.targetY = targetX - paddleWidth / 2; // Reusing targetY variable for X position
   }
 
-  private movePaddle(deltaTime: number): void {
+  private movePaddle(): void {
     const paddleCenter = this.paddle.getCenter().x;
     const targetCenter = this.targetY + 20; // Reusing targetY for X position
     const threshold = 5; // pixels

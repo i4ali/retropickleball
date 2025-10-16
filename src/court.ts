@@ -17,14 +17,13 @@ export class Court {
     // Dramatic perspective narrowing (near end much wider)
     const nearWidth = 650; // Very wide at bottom (close to player)
     const farWidth = 180; // Very narrow at top (far away)
-    const widthDiff = nearWidth - farWidth;
 
     // Draw dark background
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw foliage background (dark green surrounding area)
-    this.drawSurroundingFoliage(ctx, canvas.width / 2 - farWidth / 2, courtY, farWidth, courtHeight, farWidth, nearWidth);
+    this.drawSurroundingFoliage(ctx, courtY, farWidth, courtHeight, farWidth, nearWidth);
 
     // Draw court with dramatic perspective (trapezoid shape)
     const centerX = canvas.width / 2;
@@ -290,10 +289,9 @@ export class Court {
     ctx.globalAlpha = 1.0;
   }
 
-  private drawSurroundingFoliage(ctx: CanvasRenderingContext2D, courtX: number, courtY: number, farWidth: number, courtHeight: number, _farWidth: number, nearWidth: number): void {
+  private drawSurroundingFoliage(ctx: CanvasRenderingContext2D, courtY: number, farWidth: number, courtHeight: number, _farWidth: number, nearWidth: number): void {
     // Draw dark green foliage around the court
     const foliageColor1 = '#1a4d0a';
-    const foliageColor2 = '#0d2605';
     const canvas = this.game.getCanvas();
     const centerX = canvas.width / 2;
 

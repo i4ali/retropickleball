@@ -64,16 +64,20 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function startGame(isLoggedIn = false) {
-    startScreen.style.display = 'none';
-    canvas.style.display = 'block';
+    if (startScreen) {
+      startScreen.style.display = 'none';
+    }
+    if (canvas) {
+      canvas.style.display = 'block';
 
-    // Set canvas size (portrait orientation for retro feel)
-    canvas.width = 600;
-    canvas.height = 800;
+      // Set canvas size (portrait orientation for retro feel)
+      canvas.width = 600;
+      canvas.height = 800;
 
-    // Create and start the game
-    const game = new Game(canvas, isLoggedIn);
-    game.start();
+      // Create and start the game
+      const game = new Game(canvas, isLoggedIn);
+      game.start();
+    }
 
     console.log('ðŸŽ® Retro Pickleball started!');
   }
