@@ -2,6 +2,8 @@ import { inject } from '@vercel/analytics';
 import { Game } from './game';
 import { supabase } from './supabase';
 
+declare const nipplejs: any;
+
 inject();
 
 // Initialize the game when DOM is loaded
@@ -80,6 +82,37 @@ window.addEventListener('DOMContentLoaded', () => {
       // Create and start the game
       const game = new Game(canvas, isLoggedIn);
       game.start();
+
+      // Setup joystick for mobile
+      if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        const joystickContainer = document.getElementById('joystick-container');
+        if (joystickContainer) {
+          const joystick = nipplejs.create({
+            zone: joystickContainer,
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            color: 'white',
+            size: 150
+          });
+
+          joystick.on('move', (evt, data) => {
+            if (data.direction) {
+              if (data.direction.x === 'left') {
+                game.player.moveLeft = true;
+                game.player.moveRight = false;
+              } else if (data.direction.x === 'right') {
+                game.player.moveLeft = false;
+                game.player.moveRight = true;
+              }
+            }
+          });
+
+          joystick.on('end', () => {
+            game.player.moveLeft = false;
+            game.player.moveRight = false;
+          });
+        }
+      }
     }
 
     console.log('ðŸŽ® Retro Pickleball started!');

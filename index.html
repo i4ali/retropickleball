@@ -171,6 +171,23 @@
       color: #1a1a2e;
       box-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de;
     }
+
+    #joystick-container {
+      display: none; /* Hidden by default */
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      width: 150px;
+      height: 150px;
+      z-index: 10;
+    }
+
+    /* Show on touch devices */
+    @media (hover: none) and (pointer: coarse) {
+      #joystick-container {
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
@@ -194,6 +211,8 @@
   </div>
 
   <canvas id="gameCanvas"></canvas>
+  <div id="joystick-container"></div>
+  <script src="https://cdn.jsdelivr.net/npm/nipplejs/dist/nipplejs.js"></script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
