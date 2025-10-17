@@ -19,6 +19,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
   const authMessage = document.getElementById('authMessage');
   const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+  const mobilePromoMessage = document.getElementById('mobilePromoMessage');
+
+  // Check if on a touch device and add the message
+  if (('ontouchstart' in window || navigator.maxTouchPoints > 0) && mobilePromoMessage) {
+    mobilePromoMessage.innerHTML = '<br>For the best experience, please use a browser.';
+  }
 
   if (!startScreen || !quickPlayBtn || !loginBtn || !authModal || !closeModal || !signUpBtn || !loginEmailBtn || !emailInput || !passwordInput || !authMessage || !canvas) {
     console.error('Required elements not found!');
@@ -85,16 +91,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // Setup joystick for mobile
       if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-        const joystickContainer = document.getElementById('joystick-container');
-        if (joystickContainer) {
-          const joystick = nipplejs.create({
-            zone: joystickContainer,
-            mode: 'static',
-            position: { left: '50%', top: '50%' },
-            color: 'white',
-            size: 150
-          });
-
+                            const joystickContainer = document.getElementById('joystick-container');
+                            if (joystickContainer && canvas) {
+                              joystickContainer.style.display = 'block'; // Make the joystick container visible
+                              // Calculate canvas position and size
+                              const canvasRect = canvas.getBoundingClientRect();
+                              const canvasLeft = canvasRect.left;
+                              const canvasBottom = canvasRect.bottom;
+                  
+                              // Set joystick container position relative to the canvas
+                              // 20px from the left edge of the canvas
+                              joystickContainer.style.left = `${canvasLeft + 20}px`;
+                              // 20px from the bottom edge of the canvas
+                              joystickContainer.style.top = `${canvasBottom - joystickContainer.offsetHeight - 20}px`;
+                  
+                                          const joystick = nipplejs.create({
+                                            zone: joystickContainer,
+                                            mode: 'static',
+                                            position: { left: '50%', top: '50%' },
+                                            color: 'white',
+                                            size: 100
+                                          });
           joystick.on('move', (_evt: any, data: any) => {
             if (data.direction) {
               if (data.direction.x === 'left') {

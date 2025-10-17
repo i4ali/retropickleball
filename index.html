@@ -61,6 +61,13 @@
       image-rendering: crisp-edges;
       background: #000;
       display: none; /* Initially hidden */
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      aspect-ratio: 600 / 800;
+      min-width: 0;
+      min-height: 0;
     }
 
     #startScreen {
@@ -175,8 +182,6 @@
     #joystick-container {
       display: none; /* Hidden by default */
       position: absolute;
-      bottom: 50px;
-      left: 50px;
       width: 150px;
       height: 150px;
       z-index: 10;
@@ -184,9 +189,6 @@
 
     /* Show on touch devices */
     @media (hover: none) and (pointer: coarse) {
-      #joystick-container {
-        display: block;
-      }
     }
   </style>
 </head>
@@ -195,7 +197,7 @@
     <h1>Retro Pickleball</h1>
     <button id="quickPlayBtn">Quick Play</button>
     <button id="loginBtn">Login/Sign Up</button>
-    <p class="promo-message">For the full experience, including rank tracking and custom music, sign up or log in!</p>
+    <p class="promo-message">For the full experience, including rank tracking and custom music, sign up or log in! <span id="mobilePromoMessage"></span></p>
   </div>
 
   <div id="authModal" style="display: none;">
@@ -207,6 +209,7 @@
       <input type="password" id="passwordInput" placeholder="Password">
       <button id="signUpBtn">Sign Up</button>
       <button id="loginEmailBtn">Login</button>
+      <p style="margin-top: 1rem; color: #aaa;">For the best experience, please use a browser.</p>
     </div>
   </div>
 
