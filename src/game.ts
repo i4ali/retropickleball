@@ -33,7 +33,7 @@ export class Game {
 
   // Game entities
   private court: Court;
-  private player: Player;
+  public player: Player;
   private opponent: Player;
   public ball: Ball;
   private ai: AI;

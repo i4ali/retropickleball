@@ -95,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
             size: 150
           });
 
-          joystick.on('move', (evt, data) => {
+          joystick.on('move', (_evt: any, data: any) => {
             if (data.direction) {
               if (data.direction.x === 'left') {
                 game.player.moveLeft = true;
